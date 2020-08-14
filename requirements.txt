@@ -1,0 +1,5 @@
+django==3.1
+mongoengine==0.20.0
+django-rest-framework-mongoengine==3.4.1
+Flask-PyMongo==2.3.0
+flask-cors==3.0.8

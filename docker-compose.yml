@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+
+  mongo:
+    image: mongo:4.4
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8082:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rootpassword
+
+  webserver:
+    build: .
+    image: django
+    # command: tail -f /dev/null
+    command: python flask_app.py
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app/phone_assistant_backend
+    environment:
+      MONGO_DB_USER: root
+      MONGO_DB_PASS: rootpassword
+      MONGO_DB_HOST: mongo:27017
+      MONGO_DB_NAME: phone_assistant
+    ports:
+      - 8000:8000 # Django, remove?
+      - 5000:5000 # Flask
