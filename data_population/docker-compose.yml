@@ -1,0 +1,19 @@
+version: '3.1'
+
+services:
+
+  data_population:
+    build: .
+    image: data_population
+    command: tail -f /dev/null
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app/
+    environment:
+      MONGO_DB_USER: root
+      MONGO_DB_PASS: rootpassword
+      MONGO_DB_HOST: 192.168.0.228:27017
+      MONGO_DB_NAME: phone_assistant
+    # ports:
+      # - 8000:8000 # Django, remove?
+      # - 5000:5000 # Flask
