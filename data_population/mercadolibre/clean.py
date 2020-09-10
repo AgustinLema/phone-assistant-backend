@@ -1,4 +1,6 @@
 import database
+import pymongo
+
 import logging
 
 logging.basicConfig()
@@ -12,13 +14,12 @@ for item in database.mercadolibre_raw_data.find():
         continue
     if item["sold_quantity"] < 1:
         # logger.debug(["Skipping item with 0 sold quantity", item['title']])
-        # continue
-        pass
+        continue
     cleaned_items.append(item)
     # print(item['title'])
 print(len(cleaned_items))
 
-price_history = {}
+offer_history = {}
 for item in cleaned_items:
     obj = {
         'date': item['api_fetch_time'].strftime("%d-%m-%Y"),
@@ -27,10 +28,18 @@ for item in cleaned_items:
         'link': item['permalink'],
         'currency': item['currency_id'],
         'amount': item['price'],
+        'sold_quantity': item['sold_quantity'],
         # 'mobile_phone_id': item[],
     }
     key = f"{obj['date']} - {obj['eshop']} - {obj['link']}"
-    price_history[key] = obj
+    offer_history[key] = obj
 
-print(len(price_history.keys()))
-database.price_history.insert_many(price_history.values())
+print(len(offer_history.keys()))
+
+try:
+    database.offer_history.insert_many(offer_history.values(), ordered=False)  # with ordered=false, even if there are duplicates the rest continue
+except pymongo.errors.BulkWriteError as e:
+    details = e.details
+    del details['writeErrors']  # remove since it is too vebose
+    logger.warning("Bulk write error")
+    logger.warning(details)

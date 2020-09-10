@@ -10,23 +10,30 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    networks:
+      - phone_assistant-net
 
   mongo-express:
     image: mongo-express
     ports:
       - 8082:8081
+    volumes:
+      - ./docker/mongo/data:/data
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: rootpassword
+    networks:
+      - phone_assistant-net
 
   webserver:
     build: .
     image: django
+    restart: always
     # command: tail -f /dev/null
     command: python flask_app.py
     volumes:
       - .:/usr/src/app
-    working_dir: /usr/src/app/phone_assistant_backend
+    working_dir: /usr/src/app/flask
     environment:
       MONGO_DB_USER: root
       MONGO_DB_PASS: rootpassword
@@ -35,3 +42,9 @@ services:
     ports:
       - 8000:8000 # Django, remove?
       - 5000:5000 # Flask
+    networks:
+      - phone_assistant-net
+
+networks:
+  phone_assistant-net:
+    external: true

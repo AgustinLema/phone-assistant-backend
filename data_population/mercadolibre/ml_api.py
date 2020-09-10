@@ -74,7 +74,7 @@ def find_products_by_name(words):
     return total_results
 
 
-@cache_on_disk
+# @cache_on_disk
 def find_products_by_category(category, query=None, only_new=False, find_most_sold=False):
     url = f"https://api.mercadolibre.com/sites/MLA/search?category={category}"
     if query is not None:

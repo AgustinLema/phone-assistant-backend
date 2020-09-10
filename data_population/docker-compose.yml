@@ -12,8 +12,15 @@ services:
     environment:
       MONGO_DB_USER: root
       MONGO_DB_PASS: rootpassword
-      MONGO_DB_HOST: 192.168.0.228:27017
+      MONGO_DB_HOST: mongo:27017
       MONGO_DB_NAME: phone_assistant
+      EBAY_API_KEY: $EBAY_API_KEY
     # ports:
       # - 8000:8000 # Django, remove?
       # - 5000:5000 # Flask
+    networks:
+      - phone_assistant-net
+
+networks:
+  phone_assistant-net:
+    external: true
